@@ -27,7 +27,6 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 }
 
 #header h1 {
-    background: url("../img/logo.png") no-repeat scroll 0 0 transparent;
     height: 31px;
     left: 15px;
     line-height: 600px;
@@ -89,6 +88,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     top: 0px;
     z-index:11;
     margin: 0;
+    width: 100%;
 }
 #user-nav > ul {
     margin: 0;
@@ -147,7 +147,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     background:url(../images/backgrounds/bodyBg.png) repeat #fff;
     margin-left:0px;
     margin-right: 0;
-	margin-top:80px;
+	margin-top:20px;
     padding-bottom: 25px;
     position: relative;
     min-height: 500px;
@@ -682,7 +682,7 @@ ul.stat-boxes2 li:hover{  background:#f6f6f6}
     width: 40px;
 }
 .user-info {
-    color: #666666;
+    color: #999999;
     font-size: 11px;
 }
 

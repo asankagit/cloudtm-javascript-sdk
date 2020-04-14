@@ -36,7 +36,7 @@ class Messages {
                 break;
             
             case 8:
-                return "<div class='alert alert-success'>Wellcome to ".$CI->session->userdata('company_name').". Administration Panel</div>";
+                return "<div class='alert alert-success'>Wellcome ".$CI->session->userdata('user_name')." to Universal Tag Manager Portal</div>";
                 break;
             case 9:
                 return "<div class='alert alert-danger' role='alert'>Invalid Selection</div>";
@@ -69,10 +69,22 @@ class Messages {
                 return "<div class='alert alert-danger validator' role='alert'>Password not matched</div>";
                 break; 
             case 19:
-                return "<div class='alert alert-danger validator' role='alert'>Invalid Category</div>";
+                return "<div class='alert alert-danger validator' role='alert'>Invalid Site Id.Please try again</div>";
                 break;
             case 20:
-                return "<div class='alert alert-danger validator' role='alert'>Invalid Password</div>";
+                return "<div class='alert alert-danger validator' role='alert'>Signup Fail</div>";
+                break;
+            case 21:
+                return "<div class='alert alert-danger validator' role='alert'>Error in Signup.Please try again</div>";
+                break;
+            case 22:
+                return "<div class='alert alert-danger validator' role='alert'>Data Error.Please try again later or try with Re-login</div>";
+                break;
+            case 23:
+                return "<div class='alert alert-success' role='alert'>Site Added Successfully</div>";
+                break;  
+            case 24:
+                return "<div class='alert alert-success' role='alert'>Signup Success.Please login</div>";
                 break;
             default:
                 return "<div class='alert alert-warning' role='alert'>Unknown Error, Please Contact Administrator</div>";

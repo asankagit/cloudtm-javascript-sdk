@@ -11,9 +11,8 @@ class Common {
 	   return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
 	}
 	function clean_text($string) {
-        $db = get_instance()->db->conn_id;
         $filter = $this->xss_clean($string);
-        $string = mysqli_real_escape_string($db, trim($filter));
+        $string = trim($filter);
         $search = array('@<script[^>]*?>.*?</script>@si', // Strip out javascript
             '@<[\/\!]*?[^<>]*?>@si', // Strip out HTML tags
             '@<style[^>]*?>.*?</style>@siU', // Strip style tags properly
