@@ -98,6 +98,7 @@ class Sites extends CI_Controller {
         $sitedata = array();
         $visitors = array();
         $scrolls = array();
+        $streams = array();
         if (empty($siteid)) {
             redirect(base_url() . "sites/19");
         } else {
@@ -105,12 +106,13 @@ class Sites extends CI_Controller {
             if (isset($sitedata->siteId) && !empty($sitedata->siteId)) {
                 $visitors = $this->getVisitors($sitedata->siteId);
                 $scrolls = $this->getScrollDetails($sitedata->siteId);
+                $streams = $this->getClickStream($sitedata->siteId);
             } else {
                 redirect(base_url() . "sites/22");
             }
         }
         $this->header($msgid);
-        $this->load->view("viewSite", array('site' => $sitedata, 'visitors' => $visitors, 'scrolls' => $scrolls));
+        $this->load->view("viewSite", array('site' => $sitedata, 'visitors' => $visitors, 'scrolls' => $scrolls,'streams'=>$streams));
         $this->footer();
     }
 
@@ -135,6 +137,21 @@ class Sites extends CI_Controller {
             }
         } 
         return $sitedata;
+    }
+    
+    public function getClickStream($siteID) {
+        $streams = array();
+        $this->curl->create($this->aws_url.'clickstream?siteId=' . $siteID);
+        $headers = array(
+            'Content-type:application/json',
+            'Authorization:' . $this->token
+        );
+        $this->curl->options(array(CURLOPT_SSL_VERIFYHOST => 0, CURLOPT_SSL_VERIFYPEER => 0, CURLOPT_HTTPHEADER => $headers));
+        $response = $this->curl->execute();
+        if (empty($this->curl->error_code) && empty($this->curl->error_string)) {
+            $streams = json_decode($response);
+        }
+        return $streams;
     }
 
     public function getVisitors($siteID) {

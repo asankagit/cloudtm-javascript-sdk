@@ -106,14 +106,14 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Page</th>
-                            <th>Visits</th>
+                            <th>Total Count</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><a href="#">Freebies</a></td>
-                            <td>8550</td>
+                            <td class="text-center"><?php echo (isset($streams)) ? sizeof($streams) : 0; ?></td>
+                            <td><a href="#stream" data-toggle="modal" class="btn btn-success">View details</a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -157,12 +157,37 @@
 </div>
 
 
-<div id="scroll" class="modal hide modal-lg" style="width:70%; left:30%;">
+<div id="stream" class="modal hide modal-lg" style="width:70%; left:30%;">
     <div class="modal-header">
         <button data-dismiss="modal" class="close" type="button">×</button>
         <h3>Scroll Details</h3>
     </div>
     <div class="modal-body">
-        
+        <?php if(isset($streams)&&!empty($streams)&& sizeof($streams)>0){ ?>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Item Count</th>
+                    
+                    <th>Bucket ID</th>
+                    <th>Bucket Item</th>
+                    <th>Event Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($streams as $stream){ ?>
+                <tr>
+                    <td><?php echo $stream->ITEM_COUNT; ?></td>
+                    
+                    <td><?php echo $stream->BASKET_ID; ?></td>
+                    <td><?php echo $stream->BASKET_ITEM; ?></td>
+                    <td><?php echo $stream->EVENT_TYPE; ?></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+        <?php } else {
+            echo '<div class="alert alert-warning" style="margin:30px 10px;">No results found!</div>';
+        } ?>
     </div>
 </div>
