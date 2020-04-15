@@ -32,7 +32,7 @@ class Sites extends CI_Controller {
         }
         $sites = array();
 
-        $this->curl->create($this->aws_url.'sites');
+        $this->curl->create($this->aws_url . 'sites');
         $headers = array(
             'Content-type:application/json',
             'Authorization:' . $this->token
@@ -64,7 +64,7 @@ class Sites extends CI_Controller {
             $weburl = $this->common->clean_text($this->input->post('weburl'));
             $webdesc = $this->common->clean_text($this->input->post('webdesc'));
 
-            $this->curl->create($this->aws_url.'sites');
+            $this->curl->create($this->aws_url . 'sites');
             $curl_post_data = array(
                 "sitename" => $webname,
                 "description" => $webdesc,
@@ -82,16 +82,18 @@ class Sites extends CI_Controller {
             if (empty($this->curl->error_code) && empty($this->curl->error_string)) {
                 $response = json_decode($responseObj);
                 if (!empty($response->siteId)) {
-                    redirect(base_url() . "sites/23");
+                    $this->header($msgid);
+                    $this->load->view("addSiteResult", array('response' => $response,'script'=>$this->getScript($response->siteId)));
+                    $this->footer();
                 }
             } else {
                 redirect(base_url() . "sites/22");
             }
+        } else {
+            $this->header($msgid);
+            $this->load->view("addSite", array('response' => $response));
+            $this->footer();
         }
-
-        $this->header($msgid);
-        $this->load->view("addSite", array('response' => $response));
-        $this->footer();
     }
 
     public function details($siteid, $msgid = "") {
@@ -112,13 +114,13 @@ class Sites extends CI_Controller {
             }
         }
         $this->header($msgid);
-        $this->load->view("viewSite", array('site' => $sitedata, 'visitors' => $visitors, 'scrolls' => $scrolls,'streams'=>$streams));
+        $this->load->view("viewSite", array('site' => $sitedata, 'visitors' => $visitors, 'scrolls' => $scrolls, 'streams' => $streams));
         $this->footer();
     }
 
     public function getSiteDetails($siteID) {
         $sitedata = array();
-        $this->curl->create($this->aws_url.'sites');
+        $this->curl->create($this->aws_url . 'sites');
         $headers = array(
             'Content-type:application/json',
             'Authorization:' . $this->token
@@ -135,13 +137,13 @@ class Sites extends CI_Controller {
                     break;
                 }
             }
-        } 
+        }
         return $sitedata;
     }
-    
+
     public function getClickStream($siteID) {
         $streams = array();
-        $this->curl->create($this->aws_url.'clickstream?siteId=' . $siteID);
+        $this->curl->create($this->aws_url . 'clickstream?siteId=' . $siteID);
         $headers = array(
             'Content-type:application/json',
             'Authorization:' . $this->token
@@ -156,7 +158,7 @@ class Sites extends CI_Controller {
 
     public function getVisitors($siteID) {
         $visitors = array();
-        $this->curl->create($this->aws_url.'visitors?siteId=' . $siteID);
+        $this->curl->create($this->aws_url . 'visitors?siteId=' . $siteID);
         $headers = array(
             'Content-type:application/json',
             'Authorization:' . $this->token
@@ -171,7 +173,7 @@ class Sites extends CI_Controller {
 
     public function getScrollDetails($siteID) {
         $scrolls = array();
-        $this->curl->create($this->aws_url.'scrollSummary?siteId=' . $siteID);
+        $this->curl->create($this->aws_url . 'scrollSummary?siteId=' . $siteID);
         $headers = array(
             'Content-type:application/json',
             'Authorization:' . $this->token
@@ -182,6 +184,51 @@ class Sites extends CI_Controller {
             $scrolls = json_decode($response);
         }
         return $scrolls;
+    }
+    
+    public function getScript($siteId){
+        $script = '<pre>&lt;script src="http://ec2-35-154-229-136.ap-south-1.compute.amazonaws.com/sdk/main.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+   try {
+       var _utm = window._utm || [];
+       (function () {
+           _utm.utmKey = “RE_SITE_ID"
+       })();
+   } catch (e) {
+      console.log(e)
+   }
+&lt;/script&gt;</pre>';
+        
+        return str_replace("RE_SITE_ID", $siteId, $script);
+    }
+
+    public function test() {
+        
+        $response = array(
+                "siteId" => "37c53ca8-63f5-48dd-ab7f-9469b5fff1bd",
+                "siteName" => "Madelk",
+                "message" => "Site Added Successfully"
+        );
+        
+        $response = (object)$response;
+        
+        $script = '<pre>&lt;pre&gt;&lt;script src="http://ec2-35-154-229-136.ap-south-1.compute.amazonaws.com/sdk/main.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+   try {
+       var _utm = window._utm || [];
+       (function () {
+           _utm.utmKey = “RE_SITE_ID"
+       })();
+   } catch (e) {
+      console.log(e)
+   }
+&lt;/script&gt;&lt;/pre&gt;</pre>';
+        
+        $scriptResponse = str_replace("RE_SITE_ID", $response->siteId, $script);
+        
+        $this->header(0);
+        $this->load->view("addSiteResult", array('response' => $response,'script'=>$scriptResponse));
+        $this->footer();
     }
 
     public function header($msgid = "") {
