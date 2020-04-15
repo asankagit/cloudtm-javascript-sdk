@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $config['base_url'] = 'http://localhost/cloud/';
 $config['doc_root'] = 'C:/wamp/www/cloud/';
-
+$config['aws'] = 'https://uiwyrsy2j2.execute-api.ap-southeast-1.amazonaws.com/Prod/';
 /*
 |--------------------------------------------------------------------------
 | Index File

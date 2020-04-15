@@ -57,3 +57,4 @@ $route['signup/(:num)'] = 'Signup/index/$1';
 $route['home/(:num)'] = 'Home/index/$1';
 $route['logout'] = 'Home/logout';
 $route['sites/(:num)'] = 'Sites/index/$1';
+

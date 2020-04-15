@@ -33,13 +33,12 @@
             </ul>
         </div>
         <!--close-top-Header-menu-->
-        <div id="content">
+        <div id="content" style="min-height: 830px;">
             <div class="container-fluid">
                 <?php echo (isset($msg)&&!empty($msg))?$msg:'';  ?>
                 <div class="quick-actions_homepage">
                     <ul class="quick-actions">
                         <li> <a href="<?php echo base_url(); ?>"> <i class="icon-dashboard"></i> My Dashboard </a> </li>
                         <li> <a href="<?php echo base_url(); ?>sites"> <i class="icon-web"></i> My Sites </a> </li>
-                        <li> <a href="<?php echo base_url(); ?>"> <i class="icon-client"></i> Settings </a> </li>
                     </ul>
                 </div>

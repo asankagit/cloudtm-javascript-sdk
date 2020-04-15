@@ -5,11 +5,14 @@
  * @author Dinum
  */
 class Login extends CI_Controller {
+    private $aws_url;
+    
     public function __construct() {
         parent::__construct();
         if ($this->session->userdata('user_logged')) {
             redirect(base_url());
         }
+        $this->aws_url = $this->config->item('aws');
         $this->load->library('messages');
         $this->load->library('common');
         $this->load->library('curl'); 
@@ -28,7 +31,7 @@ class Login extends CI_Controller {
             
             if($uname!=""&&$psword!=""){
                 
-                $this->curl->create('https://uiwyrsy2j2.execute-api.ap-southeast-1.amazonaws.com/Prod/users/signIn');
+                $this->curl->create($this->aws_url.'users/signIn');
                 $curl_post_data = array(
                         "username" => $uname,
                         "password" => $psword

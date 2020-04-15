@@ -8,6 +8,7 @@
 class Sites extends CI_Controller {
 
     private $token;
+    private $aws_url;
 
     public function __construct() {
         parent::__construct();
@@ -16,6 +17,7 @@ class Sites extends CI_Controller {
         } else {
             $this->token = $this->session->userdata('token');
         }
+        $this->aws_url = $this->config->item('aws');
         $this->load->library('messages');
         $this->load->library('common');
         $this->load->library('curl');
@@ -30,7 +32,7 @@ class Sites extends CI_Controller {
         }
         $sites = array();
 
-        $this->curl->create('https://uiwyrsy2j2.execute-api.ap-southeast-1.amazonaws.com/Prod/sites');
+        $this->curl->create($this->aws_url.'sites');
         $headers = array(
             'Content-type:application/json',
             'Authorization:' . $this->token
@@ -54,7 +56,7 @@ class Sites extends CI_Controller {
     }
 
     public function add($msgid = "") {
-                
+
         $response = array();
 
         if (isset($_POST['generate'])) {
@@ -62,7 +64,7 @@ class Sites extends CI_Controller {
             $weburl = $this->common->clean_text($this->input->post('weburl'));
             $webdesc = $this->common->clean_text($this->input->post('webdesc'));
 
-            $this->curl->create('https://uiwyrsy2j2.execute-api.ap-southeast-1.amazonaws.com/Prod/sites');
+            $this->curl->create($this->aws_url.'sites');
             $curl_post_data = array(
                 "sitename" => $webname,
                 "description" => $webdesc,
@@ -76,28 +78,93 @@ class Sites extends CI_Controller {
             $this->curl->options(array(CURLOPT_SSL_VERIFYHOST => 0, CURLOPT_SSL_VERIFYPEER => 0, CURLOPT_HTTPHEADER => $headers));
             // Execute - returns responce
             $responseObj = $this->curl->execute();
-            
-            if(empty($this->curl->error_code)&&empty($this->curl->error_string)){
-               $response = json_decode($responseObj);
-               if(!empty($response->siteId)){
-                   redirect(base_url() . "sites/23");
-               }
+
+            if (empty($this->curl->error_code) && empty($this->curl->error_string)) {
+                $response = json_decode($responseObj);
+                if (!empty($response->siteId)) {
+                    redirect(base_url() . "sites/23");
+                }
             } else {
                 redirect(base_url() . "sites/22");
-            }        
+            }
         }
 
         $this->header($msgid);
-        $this->load->view("addSite",array('response'=>$response));
+        $this->load->view("addSite", array('response' => $response));
         $this->footer();
     }
-    
-    public function details($msgid = "",$siteid) {
-        if(empty($siteid)){
+
+    public function details($siteid, $msgid = "") {
+        $sitedata = array();
+        $visitors = array();
+        $scrolls = array();
+        if (empty($siteid)) {
             redirect(base_url() . "sites/19");
         } else {
-            
+            $sitedata = $this->getSiteDetails($siteid);
+            if (isset($sitedata->siteId) && !empty($sitedata->siteId)) {
+                $visitors = $this->getVisitors($sitedata->siteId);
+                $scrolls = $this->getScrollDetails($sitedata->siteId);
+            } else {
+                redirect(base_url() . "sites/22");
+            }
         }
+        $this->header($msgid);
+        $this->load->view("viewSite", array('site' => $sitedata, 'visitors' => $visitors, 'scrolls' => $scrolls));
+        $this->footer();
+    }
+
+    public function getSiteDetails($siteID) {
+        $sitedata = array();
+        $this->curl->create($this->aws_url.'sites');
+        $headers = array(
+            'Content-type:application/json',
+            'Authorization:' . $this->token
+        );
+        $this->curl->options(array(CURLOPT_SSL_VERIFYHOST => 0, CURLOPT_SSL_VERIFYPEER => 0, CURLOPT_HTTPHEADER => $headers));
+        $responseObj = $this->curl->execute();
+
+        if (empty($this->curl->error_code) && empty($this->curl->error_string)) {
+            $response = json_decode($responseObj);
+            $sites = $response->siteData;
+            foreach ($sites as $site) {
+                if ($site->siteId == $siteID) {
+                    $sitedata = $site;
+                    break;
+                }
+            }
+        } 
+        return $sitedata;
+    }
+
+    public function getVisitors($siteID) {
+        $visitors = array();
+        $this->curl->create($this->aws_url.'visitors?siteId=' . $siteID);
+        $headers = array(
+            'Content-type:application/json',
+            'Authorization:' . $this->token
+        );
+        $this->curl->options(array(CURLOPT_SSL_VERIFYHOST => 0, CURLOPT_SSL_VERIFYPEER => 0, CURLOPT_HTTPHEADER => $headers));
+        $response = $this->curl->execute();
+        if (empty($this->curl->error_code) && empty($this->curl->error_string)) {
+            $visitors = json_decode($response);
+        }
+        return $visitors;
+    }
+
+    public function getScrollDetails($siteID) {
+        $scrolls = array();
+        $this->curl->create($this->aws_url.'scrollSummary?siteId=' . $siteID);
+        $headers = array(
+            'Content-type:application/json',
+            'Authorization:' . $this->token
+        );
+        $this->curl->options(array(CURLOPT_SSL_VERIFYHOST => 0, CURLOPT_SSL_VERIFYPEER => 0, CURLOPT_HTTPHEADER => $headers));
+        $response = $this->curl->execute();
+        if (empty($this->curl->error_code) && empty($this->curl->error_string)) {
+            $scrolls = json_decode($response);
+        }
+        return $scrolls;
     }
 
     public function header($msgid = "") {

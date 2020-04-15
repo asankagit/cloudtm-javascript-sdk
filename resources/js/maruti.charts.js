@@ -4,7 +4,7 @@ $(document).ready(function(){
 	
 	// === Prepare the chart data ===/
 	var sin = [], cos = [];
-    for (var i = 0; i < 14; i += 0.5) {
+    for (var i = 0; i < 30; i += 0.5) {
         sin.push([i, Math.sin(i)]);
         cos.push([i, Math.cos(i)]);
     }

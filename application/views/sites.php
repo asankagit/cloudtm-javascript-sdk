@@ -12,6 +12,7 @@
                     <li>
                         <div class="user-thumb"> <img width="40" height="40" alt="User" src="<?php echo base_url(); ?>resources/img/demo/av1.jpg"> </div>
                         <div class="article-post">
+                            <div class="fr"><a href="<?php echo base_url()."sites/details/".$site->siteId; ?>" class="btn btn-primary btn-mini" >view more</a></div>
                             <table class="table table-striped" style="width:90%;">
                                 <tr>
                                     <td style="width:10%;"><span class="user-info">Id</span></td>
@@ -32,9 +33,6 @@
                                     <td><span class="user-info">Description</span></td>
                                     <td>:</td>                                    
                                     <td><span class="text-info"><?php echo $site->description; ?></span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-right"><a href="<?php echo base_url()."sites/details"; ?>" class="btn btn-link btn-sm " >view more</a></td>
                                 </tr>
                             </table>                            
                         </div>

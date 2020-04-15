@@ -5,11 +5,15 @@
  * @author Dinum
  */
 class Signup extends CI_Controller {
+    
+    private $aws_url;
+    
     public function __construct() {
         parent::__construct();
         if ($this->session->userdata('user_logged')) {
             redirect(base_url());
         }
+        $this->aws_url = $this->config->item('aws');
         $this->load->library('messages');
         $this->load->library('common');
         $this->load->library('curl'); 
@@ -63,7 +67,7 @@ class Signup extends CI_Controller {
             }
             
             if(!$erro){
-                $this->curl->create('https://uiwyrsy2j2.execute-api.ap-southeast-1.amazonaws.com/Prod/users/signUp');
+                $this->curl->create($this->aws_url.'users/signUp');
                 $curl_post_data = array(
                         "username" => $uname,
                         "email" => $email,
